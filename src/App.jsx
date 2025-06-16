@@ -100,22 +100,15 @@ function LandingPage() {
           <p className="text-lg leading-relaxed">
             Die kreative Plattform für Köche, Denker und Geschmacksarchitekten. Erstelle, strukturiere und teile Gerichte auf Basis deiner persönlichen Aromalogik – mit Tools für Menüdramaturgie, Textursteuerung, Stimmungsküche und Golden Samples.
           </p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-lg">
-            <li>🧠 Mood-to-Dish: Gefühl → Gericht</li>
-            <li>🍽️ Menü-Story mit Reprisen & Leergängen</li>
-            <li>🧬 Aroma- & Texturmatrix</li>
-            <li>🥄 Galerie der Golden Samples</li>
-            <li>🎓 Schulung & Lizenzen</li>
-            <li>📁 Rezeptarchiv & Export</li>
-          </ul>
-          <div>
-            <Link
-              to="/"
-              className="inline-block mt-6 px-6 py-3 bg-white text-olive font-bold text-lg rounded-xl shadow hover:bg-olive hover:text-white transition"
-            >
-              Zur Plattform
-            </Link>
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-lg">
+  <CardLink title="🧠 Mood-to-Dish" description="Gefühl → Gericht" href="/mood-to-dish" />
+  <CardLink title="🍽️ Menüdramaturgie" description="Story-Logik mit Reprisen & Leergängen" href="/menu-dramaturgy" />
+  <CardLink title="🧬 AromaDNA" description="Matrix für Aroma- & Texturkombinationen" href="/aromadna" />
+  <CardLink title="🥄 Golden Samples" description="Galerie erinnerungsstarker Gerichte" href="/golden-samples" />
+  <CardLink title="🎓 Schulung" description="Module, Lernpfade & Lizenzzugänge" href="/training" />
+  <CardLink title="📁 Archiv" description="Rezeptsuche, Tagging & Exportfunktionen" href="/archive" />
+</div>
+          
         </div>
       </div>
     </div>
@@ -155,6 +148,83 @@ function AromaDNAPage() {
   );
 }
 
+function MenuDramaturgyPage() {
+  const [steps, setSteps] = useState([
+    "Gruß aus der Küche",
+    "Kaltstarter",
+    "Warmstarter",
+    "Zwischengang",
+    "Hauptgang",
+    "Süßschluss"
+  ]);
+  const moveUp = (index) => {
+    if (index === 0) return;
+    const updated = [...steps];
+    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+    setSteps(updated);
+  };
+  return (
+    <PageWrapper title="🍽️ Menüdramaturgie">
+      <ul className="space-y-2">
+        {steps.map((step, i) => (
+          <li key={i} className="bg-white text-black p-3 rounded-xl shadow flex justify-between items-center">
+            <span>{step}</span>
+            <button onClick={() => moveUp(i)} className="text-sm text-olive">⬆︎</button>
+          </li>
+        ))}
+      </ul>
+    </PageWrapper>
+  );
+}
+
+function GoldenSamplesPage() {
+  const samples = [
+    { name: "Waldsphäre", mood: "geheimnisvoll", texture: "knusprig / schmelzend" },
+    { name: "Limonexplosion", mood: "wach", texture: "spritzig / eiskalt" }
+  ];
+  return (
+    <PageWrapper title="🥄 Golden Samples Galerie">
+      <div className="grid md:grid-cols-2 gap-4">
+        {samples.map((s, i) => (
+          <div key={i} className="bg-white p-4 text-black rounded-xl shadow">
+            <h3 className="text-xl font-bold">{s.name}</h3>
+            <p><strong>Wirkung:</strong> {s.mood}</p>
+            <p><strong>Textur:</strong> {s.texture}</p>
+          </div>
+        ))}
+      </div>
+    </PageWrapper>
+  );
+}
+
+function TrainingPage() {
+  const [progress, setProgress] = useState(40);
+  return (
+    <PageWrapper title="🎓 Schulung & Lernmodule">
+      <p className="mb-2">Dein Fortschritt:</p>
+      <div className="w-full bg-beige rounded-full h-4">
+        <div className="bg-olive h-4 rounded-full" style={{ width: `${progress}%` }}></div>
+      </div>
+    </PageWrapper>
+  );
+}
+
+function ArchivePage() {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const recipes = ["Fermentierter Sellerie", "Yuzu-Baiser", "Waldpilz-Sud"];
+  const search = () => setResults(recipes.filter(r => r.toLowerCase().includes(query.toLowerCase())));
+  return (
+    <PageWrapper title="📁 Archiv & Rezeptsuche">
+      <input className="p-2 rounded bg-beige text-black w-full mb-4" placeholder="Suche nach Rezept..." value={query} onChange={(e) => setQuery(e.target.value)} />
+      <button onClick={search} className="mb-4 px-4 py-2 bg-silver text-olive rounded-xl hover:bg-olive hover:text-white transition">Suchen</button>
+      <ul className="space-y-2">
+        {results.map((r, i) => <li key={i} className="text-white">{r}</li>)}
+      </ul>
+    </PageWrapper>
+  );
+}
+
 function NotFound() {
   return (
     <PageWrapper title="Seite nicht gefunden">
@@ -164,18 +234,33 @@ function NotFound() {
   );
 }
 
+function TopNav() {
+  return (
+    <nav className="bg-silver text-olive px-6 py-3 flex justify-between items-center shadow-md">
+      <Link to="/" className="font-bold text-xl">The Structure</Link>
+      <div className="space-x-4">
+        <Link to="/mood-to-dish" className="hover:underline">Mood-to-Dish</Link>
+        <Link to="/aromadna" className="hover:underline">AromaDNA</Link>
+        <Link to="/training" className="hover:underline">Schulung</Link>
+        <Link to="/settings" className="hover:underline">⚙️</Link>
+      </div>
+    </nav>
+  );
+}
+
 export default function App() {
   return (
     <Router>
+      <TopNav />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/welcome" element={<LandingPage />} />
         <Route path="/mood-to-dish" element={<MoodToDishPage />} />
         <Route path="/aromadna" element={<AromaDNAPage />} />
-        <Route path="/menu-dramaturgy" element={<PageWrapper title='🍽️ Menüdramaturgie'><p className='text-white'>Platzhalter für Menüdramaturgie</p></PageWrapper>} />
-        <Route path="/golden-samples" element={<PageWrapper title='🥄 Golden Samples'><p className='text-white'>Platzhalter für Golden Samples</p></PageWrapper>} />
-        <Route path="/training" element={<PageWrapper title='🎓 Schulung'><p className='text-white'>Platzhalter für Schulungen</p></PageWrapper>} />
-        <Route path="/archive" element={<PageWrapper title='📁 Archiv'><p className='text-white'>Platzhalter für Archiv</p></PageWrapper>} />
+        <Route path="/menu-dramaturgy" element={<MenuDramaturgyPage />} />
+        <Route path="/golden-samples" element={<GoldenSamplesPage />} />
+        <Route path="/training" element={<TrainingPage />} />
+        <Route path="/archive" element={<ArchivePage />} />
         <Route path="/settings" element={<UserSettings />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
